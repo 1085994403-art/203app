@@ -2,7 +2,13 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="203练习器">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjM4IiBmaWxsPSIjMGY3NjZlIi8+PHRleHQgeD0iOTAiIHk9IjExOCIgZm9udC1zaXplPSI3NCIgZm9udC1mYW1pbHk9Ii1hcHBsZS1zeXN0ZW0sSGVsdmV0aWNhLEFyaWFsIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4yMDM8L3RleHQ+PC9zdmc+">
 <title>203 作文练习器 · 北京模式</title>
 <style>
   :root {
@@ -184,6 +190,13 @@
   body.text-xl .cn, body.text-xl .wcn { font-size: 18.5px !important; }
   body.text-xl .hint, body.text-xl .qexp { font-size: 15px !important; }
   .fontRow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  /* ===== App 化：底部导航 / 更多面板 ===== */
+  #bottomNav { display: none; }
+  #moreSheet { position: fixed; inset: 0; background: rgba(15,23,42,.35); z-index: 70; display: none; }
+  #moreSheet.show { display: block; }
+  #moreSheet .sheet { position: absolute; left: 10px; right: 10px; bottom: calc(74px + env(safe-area-inset-bottom)); background: #fff; border-radius: 14px; padding: 10px; box-shadow: 0 12px 34px rgba(0,0,0,.2); }
+  #moreSheet .sheet button { width: 100%; text-align: left; padding: 13px 12px; font-size: 15.5px; border: 0; background: none; border-radius: 10px; color: var(--fg); }
+  #moreSheet .sheet button:active { background: #f1f5f9; }
   /* ===== 手机端优化 ===== */
   #toTop {
     position: fixed; right: 16px; bottom: 22px; width: 44px; height: 44px; border-radius: 999px;
@@ -217,7 +230,23 @@
     .subtabs::-webkit-scrollbar { display: none; }
     .subtab { flex: 0 0 auto; }
     .wcard.big { height: min(60vh, 330px); }
-    #toTop { bottom: calc(18px + env(safe-area-inset-bottom)); }
+    #toTop { bottom: calc(86px + env(safe-area-inset-bottom)); }
+    .tabs { display: none; }
+    .wrap { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+    #bottomNav {
+      display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+      background: rgba(255,255,255,.97); border-top: 1px solid var(--line);
+      padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    }
+    #bottomNav button {
+      flex: 1; background: none; border: 0; padding: 5px 2px; font-size: 11px;
+      color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer;
+    }
+    #bottomNav button .ico { font-size: 19px; line-height: 1.15; }
+    #bottomNav button.active { color: var(--accent); font-weight: 700; }
+    body.quizview #bottomNav { display: none; }
+    body.quizview .wrap { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
   }
 </style>
 </head>
@@ -3516,6 +3545,13 @@ window.J203_WORDS = {
     $$('.tab').forEach(function (x) { x.classList.toggle('active', x.dataset.tab === name); });
     TAB_IDS.forEach(function (id) { $('#tab-' + id).classList.toggle('hidden', id !== name); });
     try {
+      Array.prototype.forEach.call(document.querySelectorAll('#bottomNav button'), function (b) {
+        b.classList.toggle('active', b.dataset.tab === name);
+      });
+      var sh = document.getElementById('moreSheet');
+      if (sh) sh.classList.remove('show');
+    } catch (e) { }
+    try {
       var act = document.querySelector('.tab.active');
       if (act && act.scrollIntoView && window.innerWidth <= 640) {
         act.scrollIntoView({ inline: 'center', block: 'nearest' });
@@ -4824,13 +4860,32 @@ window.J203_WORDS = {
   }
 
   // 某一类（完形 / 阅读）的套题列表
+  var readYear = store.get('j203_read_year_v1', '全部');
+
   function renderQuizSectionList(kind, sel) {
     var box = $(sel);
     if (!box) return;
-    var list = kind === 'cloze' ? (QB.cloze || []) : (QB.reading || []);
+    var all = kind === 'cloze' ? (QB.cloze || []) : (QB.reading || []);
+    var list = all;
+    var chips = '';
+    if (kind === 'reading') {
+      var years = [];
+      all.forEach(function (s) { if (years.indexOf(s.year) < 0) years.push(s.year); });
+      years.sort(function (a, b) { return b - a; });
+      if (String(readYear) !== '全部' && years.indexOf(Number(readYear)) < 0) readYear = '全部';
+      chips = '<div class="chips" id="readYearChips" style="margin-bottom:10px;">' +
+        ['全部'].concat(years.map(String)).map(function (y) {
+          var n = y === '全部' ? all.length : all.filter(function (s) { return s.year === Number(y); }).length;
+          return '<button class="chip readYear' + (String(readYear) === String(y) ? ' active' : '') +
+            '" data-y="' + y + '">' + y + (y === '全部' ? '' : ' 年') + ' ' + n + '</button>';
+        }).join('') + '</div>';
+      if (String(readYear) !== '全部') {
+        list = all.filter(function (s) { return s.year === Number(readYear); });
+      }
+    }
     var name = kind === 'cloze' ? '完形填空' : '阅读理解';
     var mins = kind === 'cloze' ? '20 分钟' : '15 分钟';
-    var html = '<div class="card"><h2>' + name + '</h2>';
+    var html = '<div class="card"><h2>' + name + '</h2>' + chips;
     if (!list.length) {
       html += '<p class="hint">' + (kind === 'cloze' ? '待录入。' : '待录入（每年 4 篇 × 5 题，按年份补）。') + '</p>';
     } else {
@@ -4847,9 +4902,24 @@ window.J203_WORDS = {
     }
     html += '</div>';
     box.innerHTML = html;
-    box.querySelectorAll('.startQuiz').forEach(function (b) {
+    Array.prototype.forEach.call(box.querySelectorAll('.startQuiz'), function (b) {
       b.addEventListener('click', function () { startQuiz(b.dataset.id); });
     });
+    if (kind === 'reading') {
+      Array.prototype.forEach.call(box.querySelectorAll('.readYear'), function (b) {
+        b.addEventListener('click', function () {
+          readYear = b.dataset.y;
+          store.set('j203_read_year_v1', readYear);
+          renderQuizSectionList('reading', '#quizListRead');
+        });
+      });
+    }
+  }
+
+  function setReadYear(y) {
+    readYear = y;
+    store.set('j203_read_year_v1', readYear);
+    renderQuizSectionList('reading', '#quizListRead');
   }
 
   var quizSub = 'cloze';
@@ -4912,6 +4982,24 @@ window.J203_WORDS = {
     var home = $('#quizHome');
     if (home) home.classList.remove('hidden');
     applyFontSize(fontSize);
+  (function () {
+    if (typeof document.getElementById !== 'function') return;
+    var nav = document.getElementById('bottomNav');
+    var sheet = document.getElementById('moreSheet');
+    if (!nav || !sheet) return;
+    nav.addEventListener('click', function (e) {
+      var t = e.target;
+      while (t && t !== nav && !t.dataset) t = t.parentNode;
+      if (t && t.id === 'moreBtn') { sheet.classList.add('show'); return; }
+      if (t && t.dataset && t.dataset.tab) setTab(t.dataset.tab);
+    });
+    sheet.addEventListener('click', function (e) {
+      if (e.target === sheet) { sheet.classList.remove('show'); return; }
+      var t = e.target;
+      while (t && t !== sheet && !t.dataset) t = t.parentNode;
+      if (t && t.dataset && t.dataset.tab) { sheet.classList.remove('show'); setTab(t.dataset.tab); }
+    });
+  })();
   renderQuizHome();
     renderQuizStats();
     window.scrollTo(0, 0);
@@ -5344,6 +5432,7 @@ window.J203_WORDS = {
     startCatQuiz: startCatQuiz,
     submitCatOne: submitCatOne,
     setQuizSub: setQuizSub,
+    setReadYear: setReadYear,
     showWrongQuestion: showWrongQuestion,
     wrongQuestionOf: wrongQuestionOf,
     exitQuiz: exitQuiz,
@@ -5354,5 +5443,21 @@ window.J203_WORDS = {
   renderQuizHome();
 })();
 </script>
+  <nav id="bottomNav">
+    <button data-tab="essay"><span class="ico">✍️</span>作文</button>
+    <button data-tab="trans"><span class="ico">🈶</span>翻译</button>
+    <button data-tab="quiz"><span class="ico">📝</span>刷题</button>
+    <button data-tab="word"><span class="ico">🃏</span>单词</button>
+    <button id="moreBtn"><span class="ico">⋯</span>更多</button>
+  </nav>
+  <div id="moreSheet">
+    <div class="sheet">
+      <button data-tab="past">📚 真题</button>
+      <button data-tab="expr">🧩 表达库</button>
+      <button data-tab="mistake">❌ 错题本</button>
+      <button data-tab="ai">🤖 AI 提问</button>
+      <button data-tab="help">⚙️ 说明 / 显示设置</button>
+    </div>
+  </div>
 </body>
 </html>
