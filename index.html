@@ -404,6 +404,7 @@
       </p>
       <div class="progress" id="wordProgress"></div>
       <div class="chips" id="wordChips" style="margin-top:8px;"></div>
+      <div class="chips" id="wordTypeChips" style="margin-top:6px;"></div>
       <div class="wgrid" id="wordList"></div>
     </div>
   </section>
@@ -420,89 +421,160 @@ window.J203_WORDS = {
     { year: 2016, w: '年中行事', r: 'ねんじゅうぎょうじ', cn: '全年例行的节庆活动', type: '词组' },
     { year: 2016, w: '知識', r: 'ちしき', cn: '知识', type: '汉字词' },
     { year: 2016, w: '記録', r: 'きろく', cn: '记录', type: '汉字词' },
+    { year: 2016, w: '標準語', r: 'ひょうじゅんご', cn: '标准语', type: '汉字词' },
+    { year: 2016, w: '知恵', r: 'ちえ', cn: '智慧', type: '和语' },
+    { year: 2016, w: '活気', r: 'かっき', cn: '活力；生气', type: '汉字词' },
+    { year: 2016, w: '緊張', r: 'きんちょう', cn: '紧张', type: '汉字词' },
+    { year: 2016, w: '不自然', r: 'ふしぜん', cn: '不自然', type: '汉字词' },
+    { year: 2016, w: '季節感', r: 'きせつかん', cn: '季节感', type: '词组' },
     { year: 2016, w: 'ノルマ', r: 'ノルマ', cn: '定额；指标', type: '外来语', from: 'ロシア語 норма（norm）' },
     { year: 2016, w: 'コミュニケーション', r: 'コミュニケーション', cn: '沟通；交流', type: '外来语', from: '英語 communication' },
-
+    { year: 2016, w: 'テキスト', r: 'テキスト', cn: '教材；文本', type: '外来语', from: '英語 text' },
+    { year: 2016, w: 'レベル', r: 'レベル', cn: '水平；级别', type: '外来语', from: '英語 level' },
     { year: 2017, w: '患者', r: 'かんじゃ', cn: '患者；病人', type: '汉字词' },
     { year: 2017, w: '記述', r: 'きじゅつ', cn: '记述；描述', type: '汉字词' },
     { year: 2017, w: '普遍的', r: 'ふへんてき', cn: '普遍的', type: '汉字词' },
     { year: 2017, w: '真似', r: 'まね', cn: '模仿；效仿', type: '和语' },
     { year: 2017, w: '立場', r: 'たちば', cn: '立场；处境', type: '汉字词' },
     { year: 2017, w: '意識', r: 'いしき', cn: '意识；觉悟', type: '汉字词' },
+    { year: 2017, w: '権威', r: 'けんい', cn: '权威', type: '汉字词' },
+    { year: 2017, w: '安楽', r: 'あんらく', cn: '安乐；舒适', type: '汉字词' },
+    { year: 2017, w: '象徴', r: 'しょうちょう', cn: '象征', type: '汉字词' },
+    { year: 2017, w: '役割', r: 'やくわり', cn: '作用；角色', type: '汉字词' },
+    { year: 2017, w: '把握', r: 'はあく', cn: '把握；掌握', type: '汉字词' },
+    { year: 2017, w: '文体', r: 'ぶんたい', cn: '文体', type: '汉字词' },
     { year: 2017, w: 'コラム', r: 'コラム', cn: '专栏', type: '外来语', from: '英語 column' },
     { year: 2017, w: 'ビジネス', r: 'ビジネス', cn: '商务；生意', type: '外来语', from: '英語 business' },
-
+    { year: 2017, w: 'タイプ', r: 'タイプ', cn: '类型；打字', type: '外来语', from: '英語 type' },
+    { year: 2017, w: 'ブランド', r: 'ブランド', cn: '品牌', type: '外来语', from: '英語 brand' },
     { year: 2018, w: '尻尾', r: 'しっぽ', cn: '尾巴', type: '和语' },
     { year: 2018, w: '大晦日', r: 'おおみそか', cn: '除夕', type: '汉字词' },
     { year: 2018, w: '礼儀', r: 'れいぎ', cn: '礼仪；礼节', type: '汉字词' },
     { year: 2018, w: '迷惑', r: 'めいわく', cn: '麻烦；打扰', type: '汉字词' },
     { year: 2018, w: '反省', r: 'はんせい', cn: '反省；反思', type: '汉字词' },
     { year: 2018, w: '自己中心的', r: 'じこちゅうしんてき', cn: '以自我为中心的', type: '汉字词' },
+    { year: 2018, w: '石垣', r: 'いしがき', cn: '石墙', type: '和语' },
+    { year: 2018, w: '欧米', r: 'おうべい', cn: '欧美', type: '汉字词' },
+    { year: 2018, w: '道徳', r: 'どうとく', cn: '道德', type: '汉字词' },
+    { year: 2018, w: '反応', r: 'はんのう', cn: '反应', type: '汉字词' },
+    { year: 2018, w: '動作', r: 'どうさ', cn: '动作', type: '汉字词' },
+    { year: 2018, w: '公衆道徳', r: 'こうしゅうどうとく', cn: '公德', type: '词组' },
     { year: 2018, w: 'パソコン', r: 'パソコン', cn: '个人电脑', type: '外来语', from: '英語 personal computer' },
     { year: 2018, w: 'クリスマス', r: 'クリスマス', cn: '圣诞节', type: '外来语', from: '英語 Christmas' },
-
+    { year: 2018, w: 'カウントダウン', r: 'カウントダウン', cn: '倒计时', type: '外来语', from: '英語 countdown' },
+    { year: 2018, w: 'ダイエット', r: 'ダイエット', cn: '减肥', type: '外来语', from: '英語 diet' },
     { year: 2019, w: '本音', r: 'ほんね', cn: '真心话', type: '汉字词' },
     { year: 2019, w: '任意', r: 'にんい', cn: '任意；自愿', type: '汉字词' },
     { year: 2019, w: '監督', r: 'かんとく', cn: '监督；导演', type: '汉字词' },
     { year: 2019, w: '習性', r: 'しゅうせい', cn: '习性', type: '汉字词' },
     { year: 2019, w: '背負う', r: 'せおう', cn: '背负；承担', type: '和语' },
     { year: 2019, w: '実感', r: 'じっかん', cn: '切实感受', type: '汉字词' },
+    { year: 2019, w: '民話', r: 'みんわ', cn: '民间故事', type: '汉字词' },
+    { year: 2019, w: '順応', r: 'じゅんのう', cn: '顺应；适应', type: '汉字词' },
+    { year: 2019, w: '抵抗', r: 'ていこう', cn: '抵抗；抵触', type: '汉字词' },
+    { year: 2019, w: '指定', r: 'してい', cn: '指定', type: '汉字词' },
+    { year: 2019, w: '実態', r: 'じったい', cn: '实际状况', type: '汉字词' },
+    { year: 2019, w: '世間話', r: 'せけんばなし', cn: '闲聊', type: '词组' },
     { year: 2019, w: 'ピンク', r: 'ピンク', cn: '粉色', type: '外来语', from: '英語 pink' },
     { year: 2019, w: 'ナイフ', r: 'ナイフ', cn: '小刀', type: '外来语', from: '英語 knife' },
-
+    { year: 2019, w: 'シンポジウム', r: 'シンポジウム', cn: '研讨会', type: '外来语', from: '英語 symposium' },
+    { year: 2019, w: 'トラブル', r: 'トラブル', cn: '麻烦；纠纷', type: '外来语', from: '英語 trouble' },
     { year: 2020, w: '幸福', r: 'こうふく', cn: '幸福', type: '汉字词' },
     { year: 2020, w: '生老病死', r: 'しょうろうびょうし', cn: '生老病死', type: '词组' },
     { year: 2020, w: '敬語', r: 'けいご', cn: '敬语', type: '汉字词' },
     { year: 2020, w: '繊細', r: 'せんさい', cn: '纤细；敏感', type: '汉字词' },
     { year: 2020, w: '内面', r: 'ないめん', cn: '内心；内在', type: '汉字词' },
     { year: 2020, w: '具体的', r: 'ぐたいてき', cn: '具体的', type: '汉字词' },
+    { year: 2020, w: '優劣', r: 'ゆうれつ', cn: '优劣', type: '汉字词' },
+    { year: 2020, w: '適応', r: 'てきおう', cn: '适应', type: '汉字词' },
+    { year: 2020, w: '反映', r: 'はんえい', cn: '反映', type: '汉字词' },
+    { year: 2020, w: '基準', r: 'きじゅん', cn: '基准；标准', type: '汉字词' },
+    { year: 2020, w: '無意識', r: 'むいしき', cn: '无意识；下意识', type: '汉字词' },
+    { year: 2020, w: '共通語', r: 'きょうつうご', cn: '共通语；普通话', type: '词组' },
     { year: 2020, w: 'ニュアンス', r: 'ニュアンス', cn: '语感；细微差别', type: '外来语', from: 'フランス語 nuance' },
     { year: 2020, w: 'リズム', r: 'リズム', cn: '节奏', type: '外来语', from: '英語 rhythm' },
-
+    { year: 2020, w: 'ピクニック', r: 'ピクニック', cn: '野餐', type: '外来语', from: '英語 picnic' },
+    { year: 2020, w: 'システム', r: 'システム', cn: '系统；体系', type: '外来语', from: '英語 system' },
     { year: 2021, w: '耕作', r: 'こうさく', cn: '耕作', type: '汉字词' },
     { year: 2021, w: '学力', r: 'がくりょく', cn: '学力', type: '汉字词' },
     { year: 2021, w: '試行錯誤', r: 'しこうさくご', cn: '反复试验', type: '词组' },
     { year: 2021, w: '平気', r: 'へいき', cn: '不在乎；没事', type: '汉字词' },
     { year: 2021, w: '基礎学力', r: 'きそがくりょく', cn: '基础学力', type: '词组' },
     { year: 2021, w: '目標', r: 'もくひょう', cn: '目标', type: '汉字词' },
+    { year: 2021, w: '価値', r: 'かち', cn: '价值', type: '汉字词' },
+    { year: 2021, w: '取引', r: 'とりひき', cn: '交易；买卖', type: '汉字词' },
+    { year: 2021, w: '支配', r: 'しはい', cn: '支配；统治', type: '汉字词' },
+    { year: 2021, w: '肯定的', r: 'こうていてき', cn: '肯定的', type: '汉字词' },
+    { year: 2021, w: '価値観', r: 'かちかん', cn: '价值观', type: '词组' },
+    { year: 2021, w: '文脈', r: 'ぶんみゃく', cn: '上下文；语境', type: '汉字词' },
     { year: 2021, w: 'ベテラン', r: 'ベテラン', cn: '老手；行家', type: '外来语', from: '英語 veteran' },
     { year: 2021, w: 'ショッピング', r: 'ショッピング', cn: '购物', type: '外来语', from: '英語 shopping' },
-
+    { year: 2021, w: 'ブランド', r: 'ブランド', cn: '品牌', type: '外来语', from: '英語 brand' },
+    { year: 2021, w: 'レストラン', r: 'レストラン', cn: '餐厅', type: '外来语', from: 'フランス語 restaurant' },
     { year: 2022, w: '親父', r: 'おやじ', cn: '父亲（口语）', type: '和语' },
     { year: 2022, w: '失礼', r: 'しつれい', cn: '失礼；不礼貌', type: '汉字词' },
     { year: 2022, w: '名所旧跡', r: 'めいしょきゅうせき', cn: '名胜古迹', type: '词组' },
     { year: 2022, w: '依頼', r: 'いらい', cn: '委托；请求', type: '汉字词' },
     { year: 2022, w: '専攻', r: 'せんこう', cn: '专业；专攻', type: '汉字词' },
     { year: 2022, w: '見当', r: 'けんとう', cn: '估计；大致判断', type: '汉字词' },
+    { year: 2022, w: '合理的', r: 'ごうりてき', cn: '合理的', type: '汉字词' },
+    { year: 2022, w: '締切日', r: 'しめきりび', cn: '截止日', type: '汉字词' },
+    { year: 2022, w: '自覚', r: 'じかく', cn: '自觉；自知', type: '汉字词' },
+    { year: 2022, w: '用途', r: 'ようと', cn: '用途', type: '汉字词' },
+    { year: 2022, w: '編集者', r: 'へんしゅうしゃ', cn: '编辑（者）', type: '汉字词' },
+    { year: 2022, w: '室内', r: 'しつない', cn: '室内', type: '词组' },
     { year: 2022, w: 'ギャップ', r: 'ギャップ', cn: '差距；落差', type: '外来语', from: '英語 gap' },
     { year: 2022, w: 'レンズ', r: 'レンズ', cn: '镜头；镜片', type: '外来语', from: '英語 lens' },
-
+    { year: 2022, w: 'ミックス', r: 'ミックス', cn: '混合', type: '外来语', from: '英語 mix' },
+    { year: 2022, w: 'サイズ', r: 'サイズ', cn: '尺寸；大小', type: '外来语', from: '英語 size' },
     { year: 2023, w: '五月病', r: 'ごがつびょう', cn: '五月病（新人倦怠）', type: '汉字词' },
     { year: 2023, w: '文脈', r: 'ぶんみゃく', cn: '上下文；语境', type: '汉字词' },
     { year: 2023, w: '症状', r: 'しょうじょう', cn: '症状', type: '汉字词' },
     { year: 2023, w: '適当', r: 'てきとう', cn: '适当；随便', type: '汉字词' },
     { year: 2023, w: '調理', r: 'ちょうり', cn: '烹调；做菜', type: '汉字词' },
     { year: 2023, w: '一気', r: 'いっき', cn: '一口气；一下子', type: '汉字词' },
+    { year: 2023, w: '批判的', r: 'ひはんてき', cn: '批判性的', type: '汉字词' },
+    { year: 2023, w: '主体性', r: 'しゅたいせい', cn: '主体性；自主性', type: '汉字词' },
+    { year: 2023, w: '貧困', r: 'ひんこん', cn: '贫困', type: '汉字词' },
+    { year: 2023, w: '裕福', r: 'ゆうふく', cn: '富裕', type: '汉字词' },
+    { year: 2023, w: '双方', r: 'そうほう', cn: '双方', type: '汉字词' },
+    { year: 2023, w: '家庭内', r: 'かていない', cn: '家庭内', type: '词组' },
     { year: 2023, w: 'コンビニエンスストア', r: 'コンビニエンスストア', cn: '便利店', type: '外来语', from: '英語 convenience store' },
     { year: 2023, w: 'ネット', r: 'ネット', cn: '网络', type: '外来语', from: '英語 net' },
-
+    { year: 2023, w: 'バランス', r: 'バランス', cn: '平衡', type: '外来语', from: '英語 balance' },
+    { year: 2023, w: 'スナック', r: 'スナック', cn: '零食；小酒馆', type: '外来语', from: '英語 snack' },
     { year: 2024, w: '確率', r: 'かくりつ', cn: '概率', type: '汉字词' },
     { year: 2024, w: '礼儀作法', r: 'れいぎさほう', cn: '礼仪规矩', type: '词组' },
     { year: 2024, w: '和敬清寂', r: 'わけいせいじゃく', cn: '和敬清寂（茶道精神）', type: '词组' },
     { year: 2024, w: '客観的', r: 'きゃっかんてき', cn: '客观的', type: '汉字词' },
     { year: 2024, w: '図式', r: 'ずしき', cn: '图式；模式', type: '汉字词' },
     { year: 2024, w: '想定', r: 'そうてい', cn: '设想；假定', type: '汉字词' },
+    { year: 2024, w: '過剰', r: 'かじょう', cn: '过剩', type: '汉字词' },
+    { year: 2024, w: '心配性', r: 'しんぱいしょう', cn: '爱操心；易忧虑', type: '汉字词' },
+    { year: 2024, w: '科学的', r: 'かがくてき', cn: '科学的', type: '汉字词' },
+    { year: 2024, w: '無視', r: 'むし', cn: '无视', type: '汉字词' },
+    { year: 2024, w: '茶道具', r: 'ちゃどうぐ', cn: '茶具', type: '词组' },
+    { year: 2024, w: '防災対策', r: 'ぼうさいたいさく', cn: '防灾对策', type: '词组' },
     { year: 2024, w: 'ボランティア', r: 'ボランティア', cn: '志愿者', type: '外来语', from: '英語 volunteer' },
     { year: 2024, w: 'メリット', r: 'メリット', cn: '优点；好处', type: '外来语', from: '英語 merit' },
-
+    { year: 2024, w: 'ネガティブ', r: 'ネガティブ', cn: '消极的；负面的', type: '外来语', from: '英語 negative' },
+    { year: 2024, w: 'キャリア', r: 'キャリア', cn: '职业经历；资历', type: '外来语', from: '英語 career' },
     { year: 2025, w: '対策', r: 'たいさく', cn: '对策', type: '汉字词' },
     { year: 2025, w: '有効', r: 'ゆうこう', cn: '有效', type: '汉字词' },
     { year: 2025, w: '要因', r: 'よういん', cn: '要因；主要原因', type: '汉字词' },
     { year: 2025, w: '寿命', r: 'じゅみょう', cn: '寿命', type: '汉字词' },
     { year: 2025, w: '成熟', r: 'せいじゅく', cn: '成熟', type: '汉字词' },
     { year: 2025, w: '充分', r: 'じゅうぶん', cn: '充分；足够', type: '汉字词' },
+    { year: 2025, w: '発生', r: 'はっせい', cn: '发生', type: '汉字词' },
+    { year: 2025, w: '資源', r: 'しげん', cn: '资源', type: '汉字词' },
+    { year: 2025, w: '分析', r: 'ぶんせき', cn: '分析', type: '汉字词' },
+    { year: 2025, w: '延長', r: 'えんちょう', cn: '延长', type: '汉字词' },
+    { year: 2025, w: '学識', r: 'がくしき', cn: '学识', type: '汉字词' },
+    { year: 2025, w: '高等教育', r: 'こうとうきょういく', cn: '高等教育', type: '词组' },
     { year: 2025, w: 'リサイクル', r: 'リサイクル', cn: '回收再利用', type: '外来语', from: '英語 recycle' },
-    { year: 2025, w: 'ガラス', r: 'ガラス', cn: '玻璃', type: '外来语', from: 'オランダ語 glas' }
+    { year: 2025, w: 'ガラス', r: 'ガラス', cn: '玻璃', type: '外来语', from: 'オランダ語 glas' },
+    { year: 2025, w: 'プレゼント', r: 'プレゼント', cn: '礼物', type: '外来语', from: '英語 present' },
+    { year: 2025, w: 'タイトル', r: 'タイトル', cn: '标题；题目', type: '外来语', from: '英語 title' }
   ]
 };
 </script>
@@ -3749,18 +3821,24 @@ window.J203_WORDS = {
   renderMat();
   setSubTab('expr');
 
-  /* ---------- 单词记忆（真题单词卡） ---------- */
+    /* ---------- 单词记忆（真题单词卡） ---------- */
   var WD = window.J203_WORDS || { years: [], words: [] };
   var WORD_YEAR_KEY = 'j203_word_year_v1';
+  var WORD_TYPE_KEY = 'j203_word_type_v1';
   var WORD_KNOWN_KEY = 'j203_word_known_v1';
   var wordKnown = store.get(WORD_KNOWN_KEY, {});
   var wordYear = store.get(WORD_YEAR_KEY, null);
+  var wordType = store.get(WORD_TYPE_KEY, '全部');
   var wordFlipped = {};
+  var WORD_TYPES = ['全部', '汉字词', '和语', '词组', '外来语'];
 
   function wordYears() { return (WD.years || []).slice().sort(function (a, b) { return b - a; }); }
   function wordListOf(y) {
-    if (y === '全部') return (WD.words || []).slice();
-    return (WD.words || []).filter(function (w) { return w.year === Number(y); });
+    return (WD.words || []).filter(function (w) {
+      if (y !== '全部' && w.year !== Number(y)) return false;
+      if (wordType !== '全部' && w.type !== wordType) return false;
+      return true;
+    });
   }
 
   function renderWordProgress() {
@@ -3768,18 +3846,32 @@ window.J203_WORDS = {
     if (!el) return;
     var list = wordListOf(wordYear);
     var known = list.filter(function (w) { return wordKnown[w.year + ':' + w.w]; }).length;
-    el.textContent = wordYear + ' 年：' + list.length + ' 张卡｜已记住 ' + known + ' 张';
+    var totalKnown = (WD.words || []).filter(function (w) { return wordKnown[w.year + ':' + w.w]; }).length;
+    el.textContent = wordYear + ' 年' + (wordType === '全部' ? '' : '｜' + wordType) + '：' + list.length +
+      ' 张卡｜当前范围已记住 ' + known + ' 张（全库 ' + totalKnown + '/' + (WD.words || []).length + '）';
   }
 
   function renderWordChips() {
     var box = $('#wordChips');
-    if (!box) return;
-    var years = ['全部'].concat(wordYears().map(String));
-    box.innerHTML = years.map(function (y) {
-      var n = wordListOf(y === '全部' ? '全部' : Number(y)).length;
-      return '<button class="chip wordYear' + (String(wordYear) === y ? ' active' : '') + '" data-y="' + esc(y) + '">' +
-        esc(y) + (y === '全部' ? '' : ' 年') + ' ' + n + '</button>';
-    }).join('');
+    if (box) {
+      box.innerHTML = ['全部'].concat(wordYears().map(String)).map(function (y) {
+        var n = (WD.words || []).filter(function (w) {
+          return (y === '全部' || w.year === Number(y)) && (wordType === '全部' || w.type === wordType);
+        }).length;
+        return '<button class="chip wordYear' + (String(wordYear) === y ? ' active' : '') + '" data-y="' + esc(y) + '">' +
+          esc(y) + (y === '全部' ? '' : ' 年') + ' ' + n + '</button>';
+      }).join('');
+    }
+    var tbox = $('#wordTypeChips');
+    if (tbox) {
+      tbox.innerHTML = WORD_TYPES.map(function (t) {
+        var n = (WD.words || []).filter(function (w) {
+          return (t === '全部' || w.type === t) && (wordYear === '全部' || w.year === Number(wordYear));
+        }).length;
+        return '<button class="chip wordType' + (wordType === t ? ' active' : '') + '" data-t="' + esc(t) + '">' +
+          esc(t) + ' ' + n + '</button>';
+      }).join('');
+    }
   }
 
   function wordCardHtml(w, idx) {
@@ -3808,7 +3900,7 @@ window.J203_WORDS = {
     var box = $('#wordList');
     if (!box) return;
     var list = wordListOf(wordYear);
-    if (!list.length) { box.innerHTML = '<p class="hint">这个年份还没有单词卡。</p>'; }
+    if (!list.length) box.innerHTML = '<p class="hint">这个范围还没有单词卡。</p>';
     else box.innerHTML = list.map(wordCardHtml).join('');
     renderWordChips();
     renderWordProgress();
@@ -3817,6 +3909,12 @@ window.J203_WORDS = {
   function setWordYear(y) {
     wordYear = (y === '全部') ? '全部' : Number(y) || wordYears()[0];
     store.set(WORD_YEAR_KEY, wordYear);
+    wordFlipped = {};
+    renderWords();
+  }
+  function setWordType(t) {
+    wordType = t || '全部';
+    store.set(WORD_TYPE_KEY, wordType);
     wordFlipped = {};
     renderWords();
   }
@@ -3836,6 +3934,12 @@ window.J203_WORDS = {
       if (t && t.classList && t.classList.contains('wordYear')) setWordYear(t.dataset.y);
     });
   }
+  if ($('#wordTypeChips')) {
+    $('#wordTypeChips').addEventListener('click', function (e) {
+      var t = e.target;
+      if (t && t.classList && t.classList.contains('wordType')) setWordType(t.dataset.t);
+    });
+  }
   if ($('#wordList')) {
     $('#wordList').addEventListener('click', function (e) {
       var t = e.target;
@@ -3844,25 +3948,23 @@ window.J203_WORDS = {
         var key = t.dataset.key;
         if (wordKnown[key]) delete wordKnown[key]; else wordKnown[key] = true;
         store.set(WORD_KNOWN_KEY, wordKnown);
-        renderWordProgress();
         renderWords();
         return;
       }
       var card = (typeof t.closest === 'function') ? t.closest('.wcard') : null;
-      if (card && card.dataset && card.dataset.idx !== undefined) {
-        flipWord(Number(card.dataset.idx));
-      }
+      if (card && card.dataset && card.dataset.idx !== undefined) flipWord(Number(card.dataset.idx));
     });
   }
   if (wordYear === null || wordYear === undefined) wordYear = wordYears()[0] || 2025;
   renderWords();
   window.__wordTest = {
     setYear: setWordYear,
+    setType: setWordType,
     flip: flipWord,
     count: function (y) { return wordListOf(y).length; }
   };
 
-  /* ---------- AI 提问（默认接 DeepSeek） ---------- */
+/* ---------- AI 提问（默认接 DeepSeek） ---------- */
   var AI_CFG_KEY = 'j203_ai_cfg_v1';
   var AI_PRESETS = {
     deepseek: { base: 'https://api.deepseek.com', model: 'deepseek-chat' },
