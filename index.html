@@ -191,6 +191,13 @@
   body.text-xl .hint, body.text-xl .qexp { font-size: 15px !important; }
   .fontRow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
   /* ===== 手机端优化 ===== */
+  /* 作文逐句优化 */
+  .opt-mark { background: #fef08a; border-radius: 4px; padding: 0 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .opt-essay { line-height: 2; font-size: 15px; background: #fffdf5; border: 1px solid #fde68a; border-radius: 10px; padding: 12px; }
+  .opt-item { border-left: 3px solid #f59e0b; background: #fffbeb; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+  .opt-orig { font-size: 14.5px; color: #78350f; }
+  .opt-sug { font-size: 14.5px; margin-top: 6px; color: #065f46; }
+  .opt-sug b { color: #047857; }
   #toTop {
     position: fixed; right: 16px; bottom: 22px; width: 44px; height: 44px; border-radius: 999px;
     border: 1px solid var(--line); background: var(--card); color: var(--accent); font-size: 18px;
@@ -854,6 +861,74 @@ window.J203_WORDS = {
 
   /* ---------------- 作文分析 ---------------- */
 
+  // 逐句优化：找出可优化的句子，给出改写建议（规则引擎，机械项自动改写，风格项给方向）
+  function essayOptimize(text) {
+    const sents = splitSentences(text);
+    const items = [];
+    sents.forEach(function (raw, i) {
+      const s = raw.trim();
+      if (!s) return;
+      const reasons = [];
+      let sug = s;
+
+      // 1) です・ます混入（最硬的失分点）
+      if (/(です|ます|ました|ません|でしょう)/.test(s)) {
+        reasons.push('混入敬体（です・ます），203 作文要用常体');
+        sug = sug
+          .replace(/でしょう/g, 'だろう')
+          .replace(/ません/g, 'ない')
+          .replace(/でした/g, 'だった')
+          .replace(/です/g, 'だ')
+          .replace(/ました/g, 'た')
+          .replace(/ます/g, 'る');
+      }
+
+      // 2) 超长句 → 在中间标点处断开
+      if (s.length > 55) {
+        reasons.push('句子过长（' + s.length + ' 字），助词和接续容易出错');
+        const mid = Math.floor(s.length / 2);
+        let cut = s.indexOf('、', mid);
+        if (cut < 0) cut = s.lastIndexOf('、', mid);
+        if (cut < 0) cut = s.indexOf('て', mid);
+        if (cut > 10) sug = s.slice(0, cut + 1) + '。' + s.slice(cut + 1).replace(/^、/, '');
+      }
+
+      // 3) 高频重复词 → 换说法
+      if (/私は/.test(s)) {
+        reasons.push('「私は」偏多，建议省略主语或换成「私の場合は」');
+        sug = sug.replace(/私は/g, '私の場合は');
+      }
+      if (/と思う/.test(s)) {
+        reasons.push('「と思う」重复，可换「と考える」「のではないだろうか」');
+        sug = sug.replace(/と思う/g, 'と考える');
+      }
+      if (/しかし/.test(s)) {
+        reasons.push('「しかし」重复，可换「とはいえ」「一方で」「むしろ」');
+        sug = sug.replace(/しかし/g, 'とはいえ');
+      }
+
+      // 4) 模板/空泛表达
+      if (/例えば/.test(s)) {
+        reasons.push('「例えば」是套话，换成具体场景（时间+地点+发生了什么）');
+      }
+      if (/ことができる/.test(s)) {
+        reasons.push('「～ことができる」空泛，换成具体动作（～した／～している）');
+      }
+      if (/(以上のことから|と言えるだろう)/.test(s)) {
+        reasons.push('结尾套话，换成你自己的判断（～ではないだろうか）');
+      }
+
+      if (!reasons.length) return;
+      items.push({
+        index: i,
+        sent: s,
+        reasons: reasons,
+        suggest: sug.trim() !== s.trim() ? sug.trim() : ''
+      });
+    });
+    return { sentences: sents.map(function (x) { return x.trim(); }), items: items };
+  }
+
   function analyzeEssay(text) {
     const original = text || '';
     const raw = original.trim();
@@ -1109,7 +1184,8 @@ window.J203_WORDS = {
       },
       issues: issues,
       strengths: strengths,
-      suggestions: suggestions
+      suggestions: suggestions,
+      optimizations: essayOptimize(text)
     };
   }
 
@@ -3579,6 +3655,37 @@ window.J203_WORDS = {
     html += bar('语言', r.scores.language, 7);
     html += bar('准确性', r.scores.accuracy, 5);
     html += '</div></div></div>';
+
+    // 可优化句子：原文标注 + 逐句改写建议
+    var opt = r.optimizations;
+    if (opt && opt.items && opt.items.length) {
+      var flagMap = {};
+      opt.items.forEach(function (it) { flagMap[it.index] = it.reasons; });
+      var marked = '';
+      opt.sentences.forEach(function (s, i) {
+        if (flagMap[i]) {
+          marked += '<mark class="opt-mark" title="' + esc(flagMap[i].join('；')) + '">' + esc(s) + '</mark>';
+        } else {
+          marked += esc(s);
+        }
+      });
+      html += '<div class="card"><h2>可优化的句子（原文已标注）</h2>' +
+        '<p class="hint" style="margin:0 0 8px;">黄色高亮＝建议改写的句子（' + opt.items.length + ' 句）；下方「修改建议」给出逐句优化。</p>' +
+        '<div class="opt-essay">' + marked + '</div></div>';
+      html += '<div class="card"><h2>修改建议（逐句优化）</h2>';
+      opt.items.forEach(function (it, n) {
+        html += '<div class="opt-item"><div class="opt-orig"><b>原句 ' + (n + 1) + '</b>：' + esc(it.sent) + '</div>';
+        if (it.suggest) {
+          html += '<div class="opt-sug"><b>建议改为</b>：' + esc(it.suggest) + '</div>';
+        }
+        html += '<div class="hint" style="margin-top:6px;">原因：' + esc(it.reasons.join('；')) +
+          (it.suggest ? '' : '　→ 按上面方向改这一句（规则引擎不硬改写风格句）') + '</div></div>';
+      });
+      html += '</div>';
+    } else {
+      html += '<div class="card"><h2>可优化的句子（原文已标注）</h2>' +
+        '<p class="hint" style="margin:0;">没有检测到明显的可优化句（无です・ます混入、无超长句、无高频重复词）。</p></div>';
+    }
 
     if (r.caps.length) {
       html += '<div class="card"><h2>封顶 / 扣分原因</h2><ul class="list">';
