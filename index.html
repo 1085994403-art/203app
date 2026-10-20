@@ -190,13 +190,6 @@
   body.text-xl .cn, body.text-xl .wcn { font-size: 18.5px !important; }
   body.text-xl .hint, body.text-xl .qexp { font-size: 15px !important; }
   .fontRow { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-  /* ===== App 化：底部导航 / 更多面板 ===== */
-  #bottomNav { display: none; }
-  #moreSheet { position: fixed; inset: 0; background: rgba(15,23,42,.35); z-index: 70; display: none; }
-  #moreSheet.show { display: block; }
-  #moreSheet .sheet { position: absolute; left: 10px; right: 10px; bottom: calc(74px + env(safe-area-inset-bottom)); background: #fff; border-radius: 14px; padding: 10px; box-shadow: 0 12px 34px rgba(0,0,0,.2); }
-  #moreSheet .sheet button { width: 100%; text-align: left; padding: 13px 12px; font-size: 15.5px; border: 0; background: none; border-radius: 10px; color: var(--fg); }
-  #moreSheet .sheet button:active { background: #f1f5f9; }
   /* ===== 手机端优化 ===== */
   #toTop {
     position: fixed; right: 16px; bottom: 22px; width: 44px; height: 44px; border-radius: 999px;
@@ -230,23 +223,7 @@
     .subtabs::-webkit-scrollbar { display: none; }
     .subtab { flex: 0 0 auto; }
     .wcard.big { height: min(60vh, 330px); }
-    #toTop { bottom: calc(86px + env(safe-area-inset-bottom)); }
-    .tabs { display: none; }
-    .wrap { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
-    #bottomNav {
-      display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
-      background: rgba(255,255,255,.97); border-top: 1px solid var(--line);
-      padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
-      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    }
-    #bottomNav button {
-      flex: 1; background: none; border: 0; padding: 5px 2px; font-size: 11px;
-      color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer;
-    }
-    #bottomNav button .ico { font-size: 19px; line-height: 1.15; }
-    #bottomNav button.active { color: var(--accent); font-weight: 700; }
-    body.quizview #bottomNav { display: none; }
-    body.quizview .wrap { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+    #toTop { bottom: calc(18px + env(safe-area-inset-bottom)); }
   }
 </style>
 </head>
@@ -3545,13 +3522,6 @@ window.J203_WORDS = {
     $$('.tab').forEach(function (x) { x.classList.toggle('active', x.dataset.tab === name); });
     TAB_IDS.forEach(function (id) { $('#tab-' + id).classList.toggle('hidden', id !== name); });
     try {
-      Array.prototype.forEach.call(document.querySelectorAll('#bottomNav button'), function (b) {
-        b.classList.toggle('active', b.dataset.tab === name);
-      });
-      var sh = document.getElementById('moreSheet');
-      if (sh) sh.classList.remove('show');
-    } catch (e) { }
-    try {
       var act = document.querySelector('.tab.active');
       if (act && act.scrollIntoView && window.innerWidth <= 640) {
         act.scrollIntoView({ inline: 'center', block: 'nearest' });
@@ -4982,41 +4952,6 @@ window.J203_WORDS = {
     var home = $('#quizHome');
     if (home) home.classList.remove('hidden');
     applyFontSize(fontSize);
-  (function () {
-    if (typeof document.getElementById !== 'function') return;
-    var nav = document.getElementById('bottomNav');
-    var sheet = document.getElementById('moreSheet');
-    if (!nav || !sheet) return;
-    function pickButton(target, root) {
-      var t = target;
-      while (t && t !== root) {
-        if (t.tagName === 'BUTTON' || (t.dataset && t.dataset.tab) || t.id === 'moreBtn') return t;
-        t = t.parentNode;
-      }
-      return null;
-    }
-    function syncNav() {
-      Array.prototype.forEach.call(nav.querySelectorAll('button'), function (b) {
-        b.classList.toggle('active', !!b.dataset.tab && b.dataset.tab === currentTab);
-      });
-    }
-    nav.addEventListener('click', function (e) {
-      var t = pickButton(e.target, nav);
-      if (!t) return;
-      if (t.id === 'moreBtn') { sheet.classList.add('show'); return; }
-      if (t.dataset && t.dataset.tab) { setTab(t.dataset.tab); syncNav(); }
-    });
-    sheet.addEventListener('click', function (e) {
-      if (e.target === sheet) { sheet.classList.remove('show'); return; }
-      var t = pickButton(e.target, sheet);
-      if (t && t.dataset && t.dataset.tab) {
-        sheet.classList.remove('show');
-        setTab(t.dataset.tab);
-        syncNav();
-      }
-    });
-    syncNav();
-  })();
   renderQuizHome();
     renderQuizStats();
     window.scrollTo(0, 0);
@@ -5460,21 +5395,5 @@ window.J203_WORDS = {
   renderQuizHome();
 })();
 </script>
-  <nav id="bottomNav">
-    <button data-tab="essay"><span class="ico">✍️</span>作文</button>
-    <button data-tab="trans"><span class="ico">🈶</span>翻译</button>
-    <button data-tab="quiz"><span class="ico">📝</span>刷题</button>
-    <button data-tab="word"><span class="ico">🃏</span>单词</button>
-    <button id="moreBtn"><span class="ico">⋯</span>更多</button>
-  </nav>
-  <div id="moreSheet">
-    <div class="sheet">
-      <button data-tab="past">📚 真题</button>
-      <button data-tab="expr">🧩 表达库</button>
-      <button data-tab="mistake">❌ 错题本</button>
-      <button data-tab="ai">🤖 AI 提问</button>
-      <button data-tab="help">⚙️ 说明 / 显示设置</button>
-    </div>
-  </div>
 </body>
 </html>
