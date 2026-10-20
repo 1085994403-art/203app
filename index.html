@@ -73,6 +73,18 @@
   .wbadge.gaikoku { background: #fdf2f8; color: #9d174d; }
   .wknown { position: absolute; top: 6px; right: 8px; font-size: 11px; }
   .wface .hint { margin-top: 4px; }
+  .wswipe { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; }
+  .wswipe-row { display: flex; align-items: center; justify-content: center; gap: 14px; width: 100%; }
+  .wcard.big { width: min(88vw, 460px); height: 300px; flex: 0 0 auto; }
+  .wcard.big .wword { font-size: 30px; }
+  .wcard.big .kana { font-size: 17px; }
+  .wcard.big .wcn { font-size: 15.5px; }
+  .wcard.big .wfrom { font-size: 13px; }
+  .warrow { border: 1px solid var(--line); background: var(--card); border-radius: 999px; width: 44px; height: 44px; font-size: 20px; cursor: pointer; color: var(--muted); flex: 0 0 auto; }
+  .warrow:hover { border-color: #cbd5e1; color: var(--accent); }
+  .wcounter { font-size: 14px; color: var(--muted); }
+  .wswipe .wknown { position: static; margin-top: 8px; }
+
 
   @media (max-width: 860px) {
     .qz-split { grid-template-columns: 1fr; grid-template-rows: 44% 56%; height: calc(100vh - 160px); gap: 10px; min-height: 0; }
@@ -3821,7 +3833,7 @@ window.J203_WORDS = {
   renderMat();
   setSubTab('expr');
 
-    /* ---------- 单词记忆（真题单词卡） ---------- */
+      /* ---------- 单词记忆（真题单词卡 · 左右滑动） ---------- */
   var WD = window.J203_WORDS || { years: [], words: [] };
   var WORD_YEAR_KEY = 'j203_word_year_v1';
   var WORD_TYPE_KEY = 'j203_word_type_v1';
@@ -3830,6 +3842,7 @@ window.J203_WORDS = {
   var wordYear = store.get(WORD_YEAR_KEY, null);
   var wordType = store.get(WORD_TYPE_KEY, '全部');
   var wordFlipped = {};
+  var wordIdx = 0;
   var WORD_TYPES = ['全部', '汉字词', '和语', '词组', '外来语'];
 
   function wordYears() { return (WD.years || []).slice().sort(function (a, b) { return b - a; }); }
@@ -3874,25 +3887,24 @@ window.J203_WORDS = {
     }
   }
 
-  function wordCardHtml(w, idx) {
+  // 单张卡：正面有「记住了」，背面显示读音/意思/词源
+  function wordCardHtml(w) {
     var key = w.year + ':' + w.w;
     var isKnown = !!wordKnown[key];
     var isGaikoku = w.type === '外来语';
-    var flipped = !!wordFlipped[idx];
-    return '<div class="wcard' + (flipped ? ' flipped' : '') + '" data-idx="' + idx + '">' +
+    var flipped = !!wordFlipped[key];
+    return '<div class="wcard big' + (flipped ? ' flipped' : '') + '" data-key="' + esc(key) + '">' +
       '<div class="wcard-inner">' +
       '<div class="wface front">' +
       '<span class="wbadge' + (isGaikoku ? ' gaikoku' : '') + '">' + esc(w.year) + '｜' + esc(w.type) + '</span>' +
-      '<button class="btn ghost small wknown" data-key="' + esc(key) + '">' + (isKnown ? '✓ 已记住' : '记住了') + '</button>' +
       '<div class="wword">' + esc(w.w) + '</div>' +
-      '<div class="hint" style="margin-top:8px;">点一下翻面</div>' +
+      '<div class="hint" style="margin-top:10px;">点卡片翻面看读音</div>' +
       '</div>' +
       '<div class="wface back">' +
-      '<div class="wword" style="font-size:17px;">' + esc(w.w) + '</div>' +
+      '<div class="wword" style="font-size:22px;">' + esc(w.w) + '</div>' +
       '<div class="kana">读音：' + esc(w.r) + '</div>' +
       '<div class="wcn">' + esc(w.cn) + '</div>' +
       (w.from ? '<div class="wfrom">词源：' + esc(w.from) + '</div>' : '') +
-      (isKnown ? '<div class="hint">已记住 ✓</div>' : '') +
       '</div></div></div>';
   }
 
@@ -3900,34 +3912,94 @@ window.J203_WORDS = {
     var box = $('#wordList');
     if (!box) return;
     var list = wordListOf(wordYear);
-    if (!list.length) box.innerHTML = '<p class="hint">这个范围还没有单词卡。</p>';
-    else box.innerHTML = list.map(wordCardHtml).join('');
+    if (!list.length) {
+      box.innerHTML = '<p class="hint">这个范围还没有单词卡。</p>';
+      renderWordChips();
+      renderWordProgress();
+      return;
+    }
+    if (wordIdx >= list.length) wordIdx = 0;
+    if (wordIdx < 0) wordIdx = list.length - 1;
+    var w = list[wordIdx];
+    var isKnown = !!wordKnown[w.year + ':' + w.w];
+    box.innerHTML = '<div class="wswipe">' +
+      '<div class="wcounter">' + (wordIdx + 1) + ' / ' + list.length + '　（左右滑动或点箭头切换）</div>' +
+      '<div class="wswipe-row">' +
+      '<button class="warrow wprev" data-act="prev">‹</button>' +
+      wordCardHtml(w) +
+      '<button class="warrow wnext" data-act="next">›</button>' +
+      '</div>' +
+      '<div class="row" style="gap:8px;">' +
+      '<button class="btn ghost small wknown" data-key="' + esc(w.year + ':' + w.w) + '">' + (isKnown ? '✓ 已记住' : '记住了') + '</button>' +
+      '</div></div>';
     renderWordChips();
     renderWordProgress();
   }
 
+  function wordCurrent() {
+    var list = wordListOf(wordYear);
+    return list.length ? list[wordIdx % list.length] : null;
+  }
+  function wordMove(step) {
+    var list = wordListOf(wordYear);
+    if (!list.length) return;
+    wordIdx = (wordIdx + step + list.length) % list.length;
+    renderWords();
+  }
+  function flipWord(key) {
+    if (!key) { var w = wordCurrent(); if (!w) return false; key = w.year + ':' + w.w; }
+    wordFlipped[key] = !wordFlipped[key];
+    var card = document.querySelector('.wcard[data-key="' + key + '"]');
+    if (card && card.classList) {
+      if (wordFlipped[key]) card.classList.add('flipped'); else card.classList.remove('flipped');
+    }
+    return !!wordFlipped[key];
+  }
   function setWordYear(y) {
     wordYear = (y === '全部') ? '全部' : Number(y) || wordYears()[0];
     store.set(WORD_YEAR_KEY, wordYear);
-    wordFlipped = {};
+    wordIdx = 0;
     renderWords();
   }
   function setWordType(t) {
     wordType = t || '全部';
     store.set(WORD_TYPE_KEY, wordType);
-    wordFlipped = {};
+    wordIdx = 0;
     renderWords();
   }
 
-  function flipWord(idx) {
-    if (!wordFlipped[idx]) wordFlipped[idx] = true; else wordFlipped[idx] = false;
-    var card = document.querySelector('.wcard[data-idx="' + idx + '"]');
-    if (card && card.classList) {
-      if (wordFlipped[idx]) card.classList.add('flipped'); else card.classList.remove('flipped');
-    }
-    return !!wordFlipped[idx];
+  // 左右滑动
+  var wordTouchX = null;
+  if ($('#wordList')) {
+    $('#wordList').addEventListener('touchstart', function (e) {
+      if (e.touches && e.touches.length) wordTouchX = e.touches[0].clientX;
+    }, { passive: true });
+    $('#wordList').addEventListener('touchend', function (e) {
+      if (wordTouchX === null) return;
+      var endX = (e.changedTouches && e.changedTouches.length) ? e.changedTouches[0].clientX : null;
+      if (endX !== null) {
+        var dx = endX - wordTouchX;
+        if (dx <= -45) wordMove(1);
+        else if (dx >= 45) wordMove(-1);
+      }
+      wordTouchX = null;
+    });
+    $('#wordList').addEventListener('click', function (e) {
+      var el = e.target;
+      if (!el || !el.classList) return;
+      if (el.classList && el.classList.contains('wprev')) { wordMove(-1); return; }
+      if (el.classList && el.classList.contains('wnext')) { wordMove(1); return; }
+      if (el.classList && el.classList.contains('wknown')) {
+        var key = el.dataset.key;
+        if (wordKnown[key]) delete wordKnown[key]; else wordKnown[key] = true;
+        store.set(WORD_KNOWN_KEY, wordKnown);
+        renderWords();
+        return;
+      }
+      var card = (typeof el.closest === 'function') ? el.closest('.wcard') : null;
+      if (card && card.dataset && card.dataset.key) flipWord(card.dataset.key);
+    });
   }
-
   if ($('#wordChips')) {
     $('#wordChips').addEventListener('click', function (e) {
       var t = e.target;
@@ -3940,27 +4012,15 @@ window.J203_WORDS = {
       if (t && t.classList && t.classList.contains('wordType')) setWordType(t.dataset.t);
     });
   }
-  if ($('#wordList')) {
-    $('#wordList').addEventListener('click', function (e) {
-      var t = e.target;
-      if (!t || !t.classList) return;
-      if (t.classList.contains('wknown')) {
-        var key = t.dataset.key;
-        if (wordKnown[key]) delete wordKnown[key]; else wordKnown[key] = true;
-        store.set(WORD_KNOWN_KEY, wordKnown);
-        renderWords();
-        return;
-      }
-      var card = (typeof t.closest === 'function') ? t.closest('.wcard') : null;
-      if (card && card.dataset && card.dataset.idx !== undefined) flipWord(Number(card.dataset.idx));
-    });
-  }
   if (wordYear === null || wordYear === undefined) wordYear = wordYears()[0] || 2025;
   renderWords();
   window.__wordTest = {
     setYear: setWordYear,
     setType: setWordType,
-    flip: flipWord,
+    next: function () { wordMove(1); return wordIdx; },
+    prev: function () { wordMove(-1); return wordIdx; },
+    index: function () { return wordIdx; },
+    flip: function (key) { return flipWord(key); },
     count: function (y) { return wordListOf(y).length; }
   };
 
