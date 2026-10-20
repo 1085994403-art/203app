@@ -3498,14 +3498,18 @@ window.J203_WORDS = {
     document.body.classList.remove('text-lg', 'text-xl');
     if (fontSize === 'lg') document.body.classList.add('text-lg');
     if (fontSize === 'xl') document.body.classList.add('text-xl');
-    $('.fontBtn').forEach(function (b) {
+    var fbs = (typeof document.querySelectorAll === 'function') ? document.querySelectorAll('.fontBtn') : [];
+    Array.prototype.forEach.call(fbs, function (b) {
       if (b.dataset.size === fontSize) b.classList.add('active');
       else b.classList.remove('active');
     });
   }
-  $('.fontBtn').forEach(function (b) {
-    b.addEventListener('click', function () { applyFontSize(b.dataset.size); });
-  });
+  (function () {
+    var fbs = (typeof document.querySelectorAll === 'function') ? document.querySelectorAll('.fontBtn') : [];
+    Array.prototype.forEach.call(fbs, function (b) {
+      b.addEventListener('click', function () { applyFontSize(b.dataset.size); });
+    });
+  })();
 
   function setTab(name) {
     currentTab = name;
