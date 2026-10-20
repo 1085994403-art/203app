@@ -4987,18 +4987,35 @@ window.J203_WORDS = {
     var nav = document.getElementById('bottomNav');
     var sheet = document.getElementById('moreSheet');
     if (!nav || !sheet) return;
+    function pickButton(target, root) {
+      var t = target;
+      while (t && t !== root) {
+        if (t.tagName === 'BUTTON' || (t.dataset && t.dataset.tab) || t.id === 'moreBtn') return t;
+        t = t.parentNode;
+      }
+      return null;
+    }
+    function syncNav() {
+      Array.prototype.forEach.call(nav.querySelectorAll('button'), function (b) {
+        b.classList.toggle('active', !!b.dataset.tab && b.dataset.tab === currentTab);
+      });
+    }
     nav.addEventListener('click', function (e) {
-      var t = e.target;
-      while (t && t !== nav && !t.dataset) t = t.parentNode;
-      if (t && t.id === 'moreBtn') { sheet.classList.add('show'); return; }
-      if (t && t.dataset && t.dataset.tab) setTab(t.dataset.tab);
+      var t = pickButton(e.target, nav);
+      if (!t) return;
+      if (t.id === 'moreBtn') { sheet.classList.add('show'); return; }
+      if (t.dataset && t.dataset.tab) { setTab(t.dataset.tab); syncNav(); }
     });
     sheet.addEventListener('click', function (e) {
       if (e.target === sheet) { sheet.classList.remove('show'); return; }
-      var t = e.target;
-      while (t && t !== sheet && !t.dataset) t = t.parentNode;
-      if (t && t.dataset && t.dataset.tab) { sheet.classList.remove('show'); setTab(t.dataset.tab); }
+      var t = pickButton(e.target, sheet);
+      if (t && t.dataset && t.dataset.tab) {
+        sheet.classList.remove('show');
+        setTab(t.dataset.tab);
+        syncNav();
+      }
     });
+    syncNav();
   })();
   renderQuizHome();
     renderQuizStats();
